@@ -1,65 +1,88 @@
-import Image from "next/image";
+'use client'
 
-export default function Home() {
+import { Canvas } from '@react-three/fiber'
+import { OrbitControls, Environment } from '@react-three/drei'
+import { SignInButton, useUser } from '@clerk/nextjs'
+import { useRouter } from 'next/navigation'
+import { Sun, Moon } from 'lucide-react'
+import { BuildingPreview } from '@/src/components/BuildingPreview'
+import { useTheme } from '@/src/contexts/ThemeContext'
+
+export default function LandingPage() {
+  const { isSignedIn } = useUser()
+  const router = useRouter()
+  const { theme, toggleTheme } = useTheme()
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div className="h-screen flex">
+      {/* Theme Toggle - Top Right */}
+      <button
+        onClick={toggleTheme}
+        className="fixed top-6 right-6 z-50 p-3 rounded-full bg-white/10 dark:bg-black/20 backdrop-blur-sm border border-white/20 hover:bg-white/20 dark:hover:bg-black/30 transition-all"
+        aria-label="Toggle theme"
+      >
+        {theme === 'dark' ? (
+          <Sun className="w-5 h-5 text-yellow-400" />
+        ) : (
+          <Moon className="w-5 h-5 text-slate-700" />
+        )}
+      </button>
+
+      {/* Left: Marketing */}
+      <div className="w-2/5 bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-800 p-12 flex flex-col justify-center">
+        <h1 className="text-6xl font-bold mb-6 text-slate-900 dark:text-white">
+          PROGRAMIQ
+        </h1>
+
+        <h2 className="text-3xl text-cyan-600 dark:text-cyan-500 mb-8">
+          Pre-Construction Intelligence
+        </h2>
+
+        <p className="text-xl text-slate-700 dark:text-gray-300 mb-12 leading-relaxed">
+          Transform chaos into clarity. AI-powered visualization
+          for Bay Area construction projects. From LiDAR scan to
+          interactive 4D schedule in 3 days.
+        </p>
+
+        {isSignedIn ? (
+          <button
+            onClick={() => router.push('/dashboard')}
+            className="bg-cyan-500 hover:bg-cyan-400 text-white dark:text-black px-8 py-4 rounded-lg text-xl font-bold transition-all hover:scale-105"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            ENTER WORKSPACE
+          </button>
+        ) : (
+          <SignInButton mode="modal">
+            <button className="bg-cyan-500 hover:bg-cyan-400 text-white dark:text-black px-8 py-4 rounded-lg text-xl font-bold transition-all hover:scale-105">
+              GET STARTED
+            </button>
+          </SignInButton>
+        )}
+
+        {/* Social */}
+        <div className="flex gap-4 mt-12">
+          <a href="#" className="text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors">Twitter</a>
+          <a href="#" className="text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors">LinkedIn</a>
         </div>
-      </main>
+      </div>
+
+      {/* Right: 3D Preview */}
+      <div className="w-3/5 relative bg-slate-50 dark:bg-slate-950">
+        <Canvas camera={{ position: [10, 8, 10], fov: 45 }}>
+          <OrbitControls
+            enableDamping
+            autoRotate
+            autoRotateSpeed={0.5}
+            enableZoom={false}
+          />
+
+          <Environment preset="sunset" />
+          <ambientLight intensity={0.3} />
+          <directionalLight position={[10, 10, 5]} intensity={1} />
+
+          <BuildingPreview />
+        </Canvas>
+      </div>
     </div>
-  );
+  )
 }
