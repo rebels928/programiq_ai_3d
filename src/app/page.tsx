@@ -5,8 +5,8 @@ import { OrbitControls, Environment } from '@react-three/drei'
 import { SignInButton, useUser } from '@clerk/nextjs'
 import { useRouter } from 'next/navigation'
 import { Sun, Moon } from 'lucide-react'
-import { BuildingPreview } from '@/src/components/BuildingPreview'
-import { useTheme } from '@/src/contexts/ThemeContext'
+import { BuildingPreview } from '@/components/BuildingPreview'
+import { useTheme } from '@/contexts/ThemeContext'
 
 export default function LandingPage() {
   const { isSignedIn } = useUser()

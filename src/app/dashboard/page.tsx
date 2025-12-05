@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useUser, UserButton } from '@clerk/nextjs'
 import { Plus, Building2, Calendar, DollarSign, Sun, Moon } from 'lucide-react'
-import { useTheme } from '@/src/contexts/ThemeContext'
+import { useTheme } from '@/contexts/ThemeContext'
 
 export default function DashboardPage() {
   const { user } = useUser()
