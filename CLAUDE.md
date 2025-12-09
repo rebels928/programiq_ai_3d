@@ -141,6 +141,8 @@ This is a greenfield project. Documentation is complete, implementation has not 
 
 ### Frontend (Next.js)
 
+-never run 'pnpm dev'. User will do it manually.
+
 ```bash
 # Development
 pnpm dev                 # Start dev server at localhost:3000
